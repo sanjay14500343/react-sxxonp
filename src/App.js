@@ -8,6 +8,34 @@ export default function App() {
 
   const [search, setSearch] = useState('');
   const [data, setData] = useState([]);
+
+  const [APIData, setAPIData] = useState([])
+  const [filteredResults, setFilteredResults] = useState([]);
+  const [searchInput, setSearchInput] = useState('');
+
+  const searchItems = (searchValue) => {
+    setSearchInput(searchValue)
+    if (searchInput !== '') {
+        const filteredData = users.filter((item) => {
+            return Object.values(item).join('').toLowerCase().includes(searchInput.toLowerCase())
+        })
+        setUsers(filteredData)
+    }
+    else{
+      setUsers(filteredData)
+    }
+}
+
+useEffect(() => {
+  axios.get(`https://jsonplaceholder.typicode.com/posts`)
+      .then((response) => {
+          setAPIData(response.data);
+      })
+}, [])
+
+const filteredData = users.filter((item) => {
+  return Object.values(item).join('').toLowerCase().includes(searchInput.toLowerCase())
+  })
   //console.log(users)
   useEffect(() => {
     fetchData();
@@ -25,6 +53,7 @@ export default function App() {
       .then((response) => {
         setUsers(response.data);
       });
+
     // setUsers(data);
   };
 
@@ -148,6 +177,10 @@ export default function App() {
 
   return (
     <div className="App">
+      <input con='search'
+                placeholder='Search...'
+                onChange={(e) => searchItems(e.target.value)}
+            />
       <h1>Users</h1>
       <AddUser onAdd={onAdd} />
 
